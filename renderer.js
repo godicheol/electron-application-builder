@@ -1,0 +1,1 @@
+console.log(window.preload); // from preload.js
