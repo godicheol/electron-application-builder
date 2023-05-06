@@ -1,9 +1,5 @@
 ## Usage
 
-1.
-2.
-3.
-
-## Acknowledgements
-
--
+```console
+git clone https://github.com/godicheol/electron-application-builder.git
+```
