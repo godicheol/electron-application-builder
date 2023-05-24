@@ -4,6 +4,7 @@ module.exports = {
     executableName: "electron-application-builder",
     asar: false,
     appBundleId: "com.godicheol.electronapplicationbuilder",
+    icon: "./assets/icons/icon"
   },
   rebuildConfig: {},
   makers: [
