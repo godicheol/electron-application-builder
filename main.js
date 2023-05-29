@@ -1,102 +1,116 @@
 // main.js
 
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, dialog, ipcMain } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain
+} = require('electron');
 const path = require('path');
 
 let mainWindow;
 let webContents;
 
 const createWindow = () => {
-    // Create the browser window.
-    mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        // icon: path.join(__dirname, "assets/icons/icon-512x512.png"),
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            contextIsolation: true,
-            // nodeIntegration: true, // is default value after Electron v5
-        }
-    });
+  // Create the browser window.
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    // icon: path.join(__dirname, "assets/icons/icon-512x512.png"),
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      // nodeIntegration: true, // is default value after Electron v5
+    }
+  });
 
-    webContents = mainWindow.webContents;
+  webContents = mainWindow.webContents;
 
-    // and load the index.html of the app.
-    mainWindow.loadFile('index.html');
+  // and load the index.html of the app.
+  mainWindow.loadFile('index.html');
 
-    // Open the DevTools.
-    webContents.openDevTools();
+  // Open the DevTools.
+  webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    createWindow();
+  createWindow();
 
-    // code...
+  // code ...
 
-    webContents.on("did-finish-load", () => {
-        console.log("Window loaded.");
+  webContents.on("did-finish-load", () => {
+    console.log("Window loaded.");
 
-        sendValue("test", "Window loaded.");
-    });
+    sendValue("test", "Window loaded.");
+  });
 
-    webContents.on("close", () => {
-        console.log("Window closed.");
-    });
+  webContents.on("close", () => {
+    console.log("Window closed.");
+  });
 
-    ipcMain.handle('ping', () => 'pong'); // => preload.js
+  ipcMain.handle('ping', () => 'pong'); // => preload.js
 
-    app.on('activate', () => {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
-        }
-    });
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 })
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
 function isWin() {
-    return os.platform() === "win32";
+  return os.platform() === "win32";
 }
+
 function isMac() {
-    return os.platform() === "darwin";
+  return os.platform() === "darwin";
 }
+
 function isLoaded() {
-    return mainWindow && mainWindow.webContents && mainWindow.webContents.isLoading() === false;
+  return mainWindow && mainWindow.webContents && mainWindow.webContents.isLoading() === false;
 }
+
 function isFocused() {
-    return mainWindow && mainWindow.webContents && mainWindow.webContents.isFocused;
+  return mainWindow && mainWindow.webContents && mainWindow.webContents.isFocused;
 }
+
 function alert(title, message) {
-    dialog.showErrorBox(title || "Title", message || "");
+  dialog.showErrorBox(title || "Title", message || "");
 }
+
 function log(...args) {
-    console.log(">", ...args);
+  console.log(">", ...args);
 }
+
 function sendValue(key, value) {
-    mainWindow.webContents.send(key, null, value);
+  mainWindow.webContents.send(key, null, value);
 }
+
 function sendError(key, err) {
-    mainWindow.webContents.send(key, err);
+  mainWindow.webContents.send(key, err);
 }
+
 function setReceive(key, func) {
-    ipcMain.on(key, func);
+  ipcMain.on(key, func);
 }
+
 function removeReceive(key) {
-    ipcMain.removeListener(key);
+  ipcMain.removeListener(key);
 }
