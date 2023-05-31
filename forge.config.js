@@ -1,25 +1,31 @@
+const path = require("path");
+
 module.exports = {
   packagerConfig: {
-    name: "Electon Application Builder",
+    name: "Electron Application Builder",
     executableName: "electron-application-builder",
     asar: false,
     appBundleId: "com.godicheol.electronapplicationbuilder",
-    icon: "./assets/icons/icon"
+    icon: path.resolve(__dirname, "./assets/icons/icon"),
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        setupIcon: path.resolve(__dirname, "./assets/icons/icon.ico"),
+		    iconUrl: path.resolve(__dirname, "./assets/icons/icon.ico"),
+      },
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
+      platforms: ['darwin', 'linux', 'win32'],
     },
     {
       name: '@electron-forge/maker-dmg',
       config: {
-        background: "./assets/imgs/background.png",
+        background: path.resolve(__dirname, "./assets/imgs/background.png"),
+        icon: path.resolve(__dirname, './assets/icons/icon.icns'),
         format: "ULFO"
       }
     },
