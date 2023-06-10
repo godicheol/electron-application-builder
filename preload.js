@@ -12,42 +12,26 @@ window.addEventListener('DOMContentLoaded', () => {
   for (const type of ['chrome', 'node', 'electron']) {
     replaceText(`${type}-version`, process.versions[type])
   }
-})
+});
 
-// send to renderer.js window.preload
+// set window.preload
 contextBridge.exposeInMainWorld('preload', {
   node: () => process.versions.node,
   chrome: () => process.versions.chrome,
   electron: () => process.versions.electron,
-  // send to main.js ipcMain.handle("ping") and receive data
   ping: () => ipcRenderer.invoke('ping'),
   // we can also expose variables, not just functions
 });
 
-function setListener(key, listener) {
-  ipcRenderer.on(key, listener);
-}
-function removeListener(key, listener) {
-  ipcRenderer.removeListener(key, listener);
-}
-function removeAllListeners(key) {
-  ipcRenderer.removeAllListeners(key);
-}
-function sendValue(key, value) {
-  ipcRenderer.send(key, null, value);
-}
-function sendError(key, err) {
-  ipcRenderer.send(key, err);
-}
-
-// receive from main.js
-setListener("test", function(evt, err, res) {
-  if (err) {
-    console.error(err);
-    return;
+// set window.electron 
+contextBridge.exposeInMainWorld('methods', {
+  invoke: function(channel, value) {
+    return ipcRenderer.invoke(channel, value);
+  },
+  send: function(channel, value) {
+    ipcRenderer.send(channel, value);
+  },
+  receive: function(channel, listener) {
+    ipcRenderer.on(channel, listener);
   }
-  console.log(res);
 });
-
-// send to main.js
-sendValue("test", "Test message from preload.js");
