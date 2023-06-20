@@ -55,6 +55,17 @@ const createWindow = () => {
 
   // Open the DevTools.
   webContents.openDevTools();
+
+  // Set webContents listeners.
+  webContents.on("did-finish-load", () => {
+    console.log("Window loaded.");
+  });
+
+  webContents.on("close", () => {
+    console.log("Window closed.");
+  });
+
+  // ...
 }
 
 // This method will be called when Electron has finished
@@ -69,16 +80,6 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
-  });
-
-  // ...
-
-  webContents.on("did-finish-load", () => {
-    console.log("Window loaded.");
-  });
-
-  webContents.on("close", () => {
-    console.log("Window closed.");
   });
 
   // CSP HTTP headers
